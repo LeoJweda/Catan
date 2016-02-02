@@ -1,0 +1,11 @@
+#map {
+  background-size:100% 100%;
+}
+
+#mapCanvas {
+  width: 100%;
+}
+
+#infoCenter {
+  margin-bottom: 20px;
+}
