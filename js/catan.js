@@ -42,27 +42,27 @@ class Location {
         // Get the right color and resource name for each location
         switch (locationName) {
             case "Hills":
-                this.color = "brown";
+                this.color = "#b33b00";
                 this.resourceName = "brick";
                 break;
             case "Forest":
-                this.color = "darkgreen";
+                this.color = "#004d00";
                 this.resourceName = "lumber";
                 break;
             case "Mountains":
-                this.color = "grey";
+                this.color = "#999999";
                 this.resourceName = "ore";
                 break;
             case "Fields":
-                this.color = "yellow";
+                this.color = "#ffd11a";
                 this.resourceName = "grain";
                 break;
             case "Pasture":
-                this.color = "lightgreen";
+                this.color = "#00cc00";
                 this.resourceName = "wool";
                 break;
             case "Dessert":
-                this.color = "tan";
+                this.color = "#ffd480";
                 break;
             default:
                 this.color = "red";
@@ -136,7 +136,7 @@ class Board {
 
             if(hexX >= 0 && hexX < 10) {
                 if(hexY >= 0 && hexY < 10) {
-                    board.drawHexagon(screenX, screenY, "#000000");
+                    board.drawHexagon(screenX, screenY, "rgba(255,255,255,.5)");
                 }
             }
         });
@@ -152,70 +152,59 @@ class Board {
             "Pasture", "Pasture", "Pasture", "Pasture",
             "Dessert"];
 
+			
+		
         // Make a list with the right number of each tile value
         var values = [5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11];
-
+		
         // Randomly shuffle the location array and the values array
         locations = shuffle(locations);
 
         // Get the position of the robber
         this.robberPosition = locations.indexOf("Dessert");
+		
+		var valIndex = 0,
+			i,
+			OutterRing = [0, 1, 2, 6, 11, 15, 18, 17, 16, 12, 7, 3],
+			InnerRing = [4, 5, 10, 14, 13, 8],
+			Center = 9;
+		
+		var StartIndex = Math.round(Math.random()*11);
+		
+		var Spiral = [];
+		
+		for (i = StartIndex; i < OutterRing.length; i++){
+			Spiral.push(OutterRing[i]);
+		}
+		for (i = 0; i < StartIndex; i++){
+			Spiral.push(OutterRing[i]);
+		}
+		var SecondRingStart = InnerRing.indexOf(getSecondRing(OutterRing[StartIndex]));
+		for (i = SecondRingStart; i < InnerRing.length; i++){
+			Spiral.push(InnerRing[i]);
+		}
+		for (i = 0; i < SecondRingStart; i++){
+			Spiral.push(InnerRing[i]);
+		}
+		Spiral.push(Center);
+		for (i = 0; i < 19; i ++){
+			var j = Spiral[i];
+			if (j != this.robberPosition)
+               this.tiles.push(new Location(j, locations[j], values[valIndex++], getX(j), getY(j)));
+            else
+                this.tiles.push(new Location(j, locations[j], 0, getX(j), getY(j)));
+		}
+		
 
-        // Store tiles with correct positions and values
-        var x = 3.52 * tileWidth,
-            y = 1.00 * tileHeight,
-            valIndex = 0,
-            i;
-
-        for (i = 0; i < 3; i++) {
-            if (i != this.robberPosition)
-                this.tiles.push(new Location(i, locations[i], values[valIndex++], x, y));
-            else
-                this.tiles.push(new Location(i, locations[i], 0, x, y));
-            x += tileWidth;
-        }
-        x -= 3.5 * tileWidth;
-        y += tileHeight;
-        for (i = 3; i < 7; i++) {
-            if (i != this.robberPosition)
-                this.tiles.push(new Location(i, locations[i], values[valIndex++], x, y));
-            else
-                this.tiles.push(new Location(i, locations[i], 0, x, y));
-            x += tileWidth;
-        }
-        x -= 4.5 * tileWidth;
-        y += tileHeight;
-        for (i = 7; i < 12; i++) {
-            if (i != this.robberPosition)
-                this.tiles.push(new Location(i, locations[i], values[valIndex++], x, y));
-            else
-                this.tiles.push(new Location(i, locations[i], 0, x, y));
-            x += tileWidth;
-        }
-        x -= 4.5 * tileWidth;
-        y += tileHeight;
-        for (i = 12; i < 16; i++) {
-            if (i != this.robberPosition)
-                this.tiles.push(new Location(i, locations[i], values[valIndex++], x, y));
-            else
-                this.tiles.push(new Location(i, locations[i], 0, x, y));
-            x += tileWidth;
-        }
-        x -= 3.5 * tileWidth;
-        y += tileHeight;
-        for (i = 16; i < 19; i++) {
-            if (i != this.robberPosition)
-                this.tiles.push(new Location(i, locations[i], values[valIndex++], x, y));
-            else
-                this.tiles.push(new Location(i, locations[i], 0, x, y));
-            x += tileWidth;
-        }
 
         // Setup variables for storing used build sites
         this.usedBuildSites = [];
         this.usedRoadSites = [];
     }
 
+	
+
+	
     // Function to draw a single tile and returns the array of vertex coordinates
     drawTile(location) {
         // Draw the hexagon and save it's array of vertices
@@ -411,6 +400,79 @@ class Board {
         // TODO: Draw all of the players roads
     }
 }
+	function getSecondRing(StartIndex){
+	
+		switch(StartIndex){
+			case 0:
+			case 1:
+				return 4;
+			case 2:
+			case 6:
+				return 5;
+			case 11:
+			case 15:
+				return 10;
+			case 18:
+			case 17:
+				return 14;
+			case 16:
+			case 12:
+				return 13;
+			case 7:
+			case 3:
+				return 8;
+		}
+		
+	}
+	
+
+	function getX(location){
+		switch(location){
+			case 0:
+				return 3.52 * tileWidth;
+			case 1:
+			case 2:
+				return getX(0) + (location * tileWidth);
+			case 3:
+				return getX(0) + (3 * tileWidth) - (3.5 * tileWidth);
+			case 4:
+			case 5:
+			case 6:
+				return getX(3) + ((location-3) * tileWidth);
+			case 7:
+				return getX(3) + (4 * tileWidth) - (4.5 * tileWidth);
+			case 8:
+			case 9:
+			case 10:
+			case 11:
+				return getX(7) + ((location-7) * tileWidth);
+			case 12:
+				return getX(7) + (5 * tileWidth) - (4.5 * tileWidth);
+			case 13:
+			case 14:
+			case 15:
+				return getX(12) + ((location-12) * tileWidth);
+			case 16:
+				return getX(12) + (4 * tileWidth) - (3.5 * tileWidth);
+			case 17:
+			case 18:
+				return getX(16) + ((location-16) * tileWidth);
+		}
+	}
+	
+	function getY(location){
+		if (location < 3)
+				return tileHeight;
+		else if (location < 7)
+				return 2 * tileHeight;
+		else if (location < 12)
+				return 3 * tileHeight;
+		else if (location < 16)
+				return 4 * tileHeight;
+		else
+				return 5 * tileHeight;
+	
+	}
 
 // Function to randomly shuffle an array
 function shuffle(array) {
