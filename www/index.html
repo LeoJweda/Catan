@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Catan</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="css/offcanvas.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="css/catan.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Wrap all page content here -->
+    <div id="wrap">
+      <!-- Fixed navbar -->
+      <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <button id="actionButtonsToggle" type="button" class="navbar-toggle hidden" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle Controls</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Catan</a>
+          </div>
+          <div class="collapse navbar-collapse">
+            <ul id="actionButtons" class="nav navbar-nav navbar-left">
+              <li><a id="rollLink" href="#"><span class="glyphicon glyphicon-unchecked"></span> Roll</a></li>
+              <li><a id="tradeLink" href="#"><span class="glyphicon glyphicon-transfer"></span> Trade</a></li>
+              <li><a id="buildLink" href="#"><span class="glyphicon glyphicon-tower"></span> Build</a></li>
+              <li><a id="endTurnLink" href="#"><span class="glyphicon glyphicon-thumbs-up"></span> End Turn</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+
+      <!-- Begin page content -->
+      <div class="container">
+        <div class="row row-offcanvas row-offcanvas-right">
+          <div class="col-xs-12 col-sm-9">
+            <p class="pull-right visible-xs">
+              <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle Info</button>
+            </p>
+
+            <div id="mainContent" class="jumbotron">
+              <!-- The map -->
+              <div id="mapContainer" class="thumbnail">
+                <div id="map">
+                  <canvas id="mapCanvas"></canvas>
+                </div>
+              </div>
+            </div>
+          </div><!--/span-->
+
+          <!-- The sidebar -->
+          <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+            <div class="well">
+              <!-- The notification center -->
+              <div id="notificationCenter" class="alert alert-warning invisible">
+                <span id="notificationCenterSpan"></span>
+              </div>
+
+              <!-- Resources -->
+              <div class="panel panel-default">
+                <div class="panel-heading">Resources</div>
+                <div id="infoCenter" class="panel-body">
+                  <span><span class="glyphicon glyphicon-tree-deciduous"></span> Lumber: </span><span id="seasonSpan">1</span><br/>
+                  <span><span class="glyphicon glyphicon-th"></span> Brick: </span><span id="weatherSpan">1</span><br/>
+                  <span><span class="glyphicon glyphicon-picture"></span> Wool: </span><span id="weatherSpan">0</span><br/>
+                  <span><span class="glyphicon glyphicon-grain"></span> Grain: </span><span id="weatherSpan">0</span><br/>
+                  <span><span class="glyphicon glyphicon-cloud"></span> Ore: </span><span id="suppliesSpan">3</span><br/>
+                </div>
+              </div>
+
+              <!-- Development Cards -->
+              <div class="panel panel-default">
+                <div class="panel-heading">Development Cards</div>
+                <div id="infoCenter" class="panel-body">
+                  <span><span class="glyphicon glyphicon-knight"></span> Knight: </span><span id="seasonSpan">1</span><br/>
+                  <span><span class="glyphicon glyphicon-road"></span> Road Building: </span><span id="weatherSpan">1</span><br/>
+                  <span><span class="glyphicon glyphicon-apple"></span> Year of Plenty: </span><span id="weatherSpan">0</span><br/>
+                  <span><span class="glyphicon glyphicon-registration-mark"></span> Monopoly: </span><span id="weatherSpan">0</span><br/>
+                  <span><span class="glyphicon glyphicon-star"></span> Victory Point: </span><span id="suppliesSpan">3</span><br/>
+                </div>
+              </div>
+            </div>
+          </div><!--/span-->
+        </div><!--/row-->
+      </div>
+    </div>
+
+    <div class="modal fade" id="gameSettings" tabindex="-1" role="dialog" aria-labelledby="gameSettingsLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="gameSettingsLabel">Settings</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group" id="nameFormGroup">
+              <label for="nameText">Name</label>
+              <input type="text" class="form-control" id="nameText">
+            </div>
+            <div class="form-group" id="colorFormGroup">
+              <label for="colorDropdown">Color:</label>
+              <select id="colorDropdown" class="form-control"></select>
+            </div>
+            <div id="players">
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="ready" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-play"></span> Ready</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="js/offcanvas.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="js/catan.js"></script>
+    <script src="js/client.js"></script>
+  </body>
+</html>
